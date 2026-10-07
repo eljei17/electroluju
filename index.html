@@ -267,7 +267,7 @@ footer{margin-top:64px;background:var(--surface);border-top:1px solid var(--line
       <div><h4>Contacto</h4><ul id="foot-contact"></ul></div>
       <div><h4>Categorías</h4><ul id="foot-cats"></ul></div>
     </div>
-    <div class="legal"><span id="copy"></span><span>Precios en pesos colombianos (COP), IVA incluido. · <button class="adminlink" id="admin-link">Administrador</button></span></div>
+    <div class="legal"><span id="copy"></span><span>Precios en pesos colombianos (COP), IVA incluido.</span></div>
   </div>
 </footer>
 <div id="panel-host"></div>
@@ -607,7 +607,7 @@ var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
   $('q').addEventListener('input',function(e){ ui.q=e.target.value; renderGrid(); });
   $('sort').addEventListener('change',function(e){ ui.sort=e.target.value; renderGrid(); });
   $('cart-btn').onclick=openCart;
-  $('admin-link').onclick=openLogin;
+  window.addEventListener('hashchange',function(){ if(location.hash==='#admin') openLogin(); });
   if(location.hash==='#admin') openLogin();
   sb.auth.getSession().then(function(r){ ui.user=r.data.session?r.data.session.user:null; renderAdminBar(); renderGrid(); });
   saveCart();
