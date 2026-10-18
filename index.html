@@ -551,11 +551,17 @@ var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
     };
     function showDelete(){
       $('del-zone').innerHTML='<div class="confirm">¿Eliminar “'+esc(draft.name||'este producto')+'”? Esta acción no se puede deshacer.<div class="actions"><button class="btn small" id="d-no">No, conservar</button><button class="btn small danger" id="d-yes">Sí, eliminar</button></div></div>';
+      $('del-zone').scrollIntoView({behavior:'smooth',block:'center'});
       $('d-no').onclick=function(){ $('del-zone').innerHTML=''; };
       $('d-yes').onclick=async function(){
-        this.disabled=true;
-        var r=await sb.from('products').delete().eq('id',p.id);
-        if(r.error){ $('f-err').textContent='No se pudo eliminar. Vuelve a iniciar sesión e intenta de nuevo.'; this.disabled=false; return; }
+        var btn=this; btn.disabled=true; $('f-err').textContent='';
+        var r=await sb.from('products').delete().eq('id',p.id).select('id');
+        if(r.error || !r.data || !r.data.length){
+          console.error(r.error||'0 filas eliminadas');
+          $('f-err').textContent=r.error?('No se pudo eliminar: '+r.error.message):'Supabase no permitió eliminar el producto. Revisa que tu correo de administrador sea el mismo de setup.sql.';
+          $('f-err').scrollIntoView({behavior:'smooth',block:'center'});
+          btn.disabled=false; return;
+        }
         await removePhotos(original.concat(uploaded));
         closePanel(); toast('Producto eliminado'); load();
       };
